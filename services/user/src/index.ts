@@ -12,3 +12,5 @@ app.use('/api/user', userRoutes);
 app.listen(process.env.PORT, () => {
     console.log(`User service is running on port  http://localhost:${process.env.PORT}`);
 });
+
+
