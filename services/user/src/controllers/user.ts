@@ -3,7 +3,7 @@ import getBuffer from "../utils/buffer.js";
 import { sql } from "../utils/db.js";
 import ErrorHandler from "../utils/errorHandler.js";
 import { TryCatch } from "../utils/TryCatch.js";
-import axios from "axios";
+import axios, { get } from "axios";
 
 interface UploadResponse {
     url: string;
@@ -198,5 +198,71 @@ export const deleteSkillFromUser = TryCatch(async (req: AuthenticatedRequest, re
     });
 }
 );
+
+export const applyForJob = TryCatch(async (req: AuthenticatedRequest, res,) => {
+    const user = req.user;
+    
+    if(!user){
+        throw new ErrorHandler(401,"Authentication required");
+    }
+
+    if(user.role !== "jobseeker"){
+        throw new ErrorHandler(403,"Forbidden. Only jobseekers can apply for jobs");
+    };
+
+    const applicant_id = user.user_id;
+    const reusme = user.resume;
+
+    if(!reusme){
+        throw new ErrorHandler(400,"Please upload your resume before applying for jobs");
+    }   
+
+    const {job_id} = req.body;
+
+    if(!job_id){
+        throw new ErrorHandler(400,"Job ID is required");
+    }
+
+    const [job] = await sql`SELECT is_active FROM jobs WHERE job_id = ${job_id}`;
+
+    if(!job){
+        throw new ErrorHandler(404,"Job not found");
+    }
+
+    if(!job.is_active){
+        throw new ErrorHandler(400,"Cannot apply for an inactive job");
+    }
+
+    const now = Date.now();
+
+    const subTime = req.user?.subscription ? new Date(req.user.subscription).getTime() : 0;
+
+    const isSubscribed = subTime > now;
+
+    let newApplication;
+
+    try{
+        [newApplication] = await sql`INSERT INTO applications (applicant_id,applicant_email, job_id, resume, subscribed) VALUES (${applicant_id},${user?.email}, ${job_id}, ${reusme}, ${isSubscribed})`;
+    }catch(error:any){
+        if(error.code === "23505"){//unique value
+            throw new ErrorHandler(409,"You have already applied for this job");
+        }
+        throw error;
+    }
+
+    res.json({
+        message: "Applied for job successfully",
+        application: newApplication,
+    });
+});
+
+export const getAllApplications = TryCatch(async (req: AuthenticatedRequest, res) => {
+    const applications = await sql`SELECT a.*, j.title AS job_title, j.salary AS job_salary, j.location AS job_location FROM applications a JOIN jobs j ON a.job_id = j.job_id WHERE a.applicant_id = ${req.user?.user_id}`;
+
+    res.json(applications);
+});
+   
+
+
 
 

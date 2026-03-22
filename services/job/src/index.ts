@@ -1,8 +1,16 @@
 import app from './app.js';
 import dotenv from 'dotenv';
 import { sql } from './utils/db.js';
+import { connectKafka } from './producer.js';
 
 dotenv.config();
+
+connectKafka().then(() => {
+    console.log('Kafka connection established successfully');
+}).catch((error) => {
+    console.error('Failed to establish Kafka connection:', error);
+    process.exit(1);
+});
 
 async function initDB() {
     try{
@@ -54,7 +62,7 @@ async function initDB() {
             application_id SERIAL PRIMARY KEY,
             job_id INTEGER NOT NULL REFERENCES jobs(job_id) ON DELETE CASCADE,
             applicant_id INTEGER NOT NULL,
-            applicat_email VARCHAR(255) NOT NULL,
+            applicant_email VARCHAR(255) NOT NULL,
             status application_status NOT NULL DEFAULT 'Submitted',
             resume VARCHAR(255) NOT NULL,
             applied_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
