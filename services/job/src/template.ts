@@ -1,115 +1,142 @@
 export const applicationStatusUpdateTemplate = (jobTitle: string) => {
-return `
+  return `
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Application Status Update</title>
+
 <style>
-body {
-margin: 0;
-padding: 0;
-font-family: Arial, sans-serif;
-background-color: #f4f4f4;
-}
-.email-wrapper {
-width: 100%;
-border-collapse: collapse;
-}
-.email-container {
-width: 600px;
-border-collapse: collapse;
-background-color: #ffffff;
-box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-border-radius: 8px;
-overflow: hidden;
-}
-.header {
-background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-padding: 40px 30px;
-text-align: center;
-}
-.header h1 {
-margin: 0;
-color: #ffffff;
-font-size: 28px;
-font-weight: 600;
-}
-.content {
-padding: 40px 30px;
-}
-.text {
-margin: 0 0 20px;
-color: #333333;
-font-size: 16px;
-line-height: 1.6;
-}
-.text-muted {
-margin: 0 0 20px;
-color: #666666;
-font-size: 14px;
-line-height: 1.6;
-}
-.footer {
-background-color: #f8f9fa;
-padding: 30px;
-text-align: center;
-border-top: 1px solid #e9ecef;
-}
-.footer-text {
-margin: 0 0 10px;
-color: #999999;
-font-size: 12px;
-}
-.footer-text:last-child {
-margin: 0;
-}
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #fafafa;
+    color: #18181b;
+  }
+
+  .email-wrapper {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fafafa;
+  }
+
+  .email-container {
+    width: 100%;
+    max-width: 520px;
+    margin: 60px auto;
+    background-color: #ffffff;
+    border: 1px solid #e4e4e7;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.04);
+    border-radius: 24px;
+    overflow: hidden;
+  }
+
+  .header {
+    padding: 48px 40px 16px;
+    text-align: center;
+  }
+
+  .header h1 {
+    margin: 0;
+    color: #09090b;
+    font-size: 24px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+  }
+
+  .content {
+    padding: 0 40px 48px;
+    text-align: center;
+  }
+
+  .text {
+    margin: 0 0 24px;
+    color: #52525b;
+    font-size: 15px;
+    line-height: 1.6;
+    font-weight: 500;
+  }
+
+  .button-wrapper {
+    margin: 32px 0;
+    text-align: center;
+  }
+
+  .button {
+    display: inline-block;
+    padding: 16px 40px;
+    background-color: #09090b;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 16px;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.2px;
+  }
+
+  .footer {
+    background-color: #fafafa;
+    padding: 32px 40px;
+    text-align: center;
+    border-top: 1px solid #f4f4f5;
+  }
+
+  .footer-text {
+    margin: 0 0 8px;
+    color: #a1a1aa;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .footer-text:last-child {
+    margin: 0;
+  }
 </style>
 </head>
+
 <body>
 <table role="presentation" class="email-wrapper">
-<tr>
-<td align="center" style="padding: 40px 0;">
-<table role="presentation" class="email-container">
-<!-- Header -->
-<tr>
-<td class="header">
-<h1>Application Status Update</h1>
-</td>
-</tr>
-<!-- Content -->
-<tr>
-<td class="content">
-<p class="text">Hi there,</p>
-<p class="text">
-Your application for the position of
-<strong>${jobTitle}</strong> has been updated.
-</p>
-<p class="text-muted">
-You can check your application status at Lumora.
-</p>
-<p class="text-muted">
-Thank you for applying!
-</p>
-</td>
-</tr>
-<!-- Footer -->
-<tr>
-<td class="footer">
-<p class="footer-text">
-© 2025 HireHeaven. All rights reserved.
-</p>
-<p class="footer-text">
-This is an automated message, please do not reply.
-</p>
-</td>
-</tr>
-</table>
-</td>
-</tr>
+  <tr>
+    <td align="center" style="padding: 60px 20px; background-image: radial-gradient(#e4e4e7 1px, transparent 1px); background-size: 24px 24px;">
+      <table role="presentation" class="email-container">
+        <tr>
+          <td class="header">
+            <table role="presentation" style="margin: 0 auto; margin-bottom: 24px;">
+              <tr>
+                <td style="width: 48px; height: 48px; background-color: #09090b; border-radius: 12px; text-align: center; vertical-align: middle;">
+                   <div style="margin:0; color:#fff; font-size:22px; font-weight:900; letter-spacing: -1px; font-family: sans-serif;">Lu</div>
+                </td>
+              </tr>
+            </table>
+            <h1>Status Update</h1>
+          </td>
+        </tr>
+        <tr>
+          <td class="content">
+            <p class="text">
+              An update has been posted to your application for the <strong>\${jobTitle}</strong> position.
+            </p>
+            <div class="button-wrapper">
+              <a href="https://lumora.com/dashboard" class="button">View Dashboard</a>
+            </div>
+            <p class="text" style="font-size: 13px; margin: 0; color: #a1a1aa;">
+              Thank you for exploring opportunities through our platform.
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td class="footer">
+            <p class="footer-text">© 2026 Lumora Systems. All operational rights reserved.</p>
+            <p class="footer-text">Automated dispatch. Do not reply to this channel.</p>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
 </table>
 </body>
 </html>
-`;
+  `;
 };

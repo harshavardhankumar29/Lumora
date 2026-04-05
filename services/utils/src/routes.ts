@@ -77,7 +77,7 @@ Mastery', 'DevOps & Cloud').",
 `;
 
 const response = await ai.models.generateContent({
-    model: "gemini-3-flash-preview",
+    model: "gemini-2.5-flash",
     contents: prompt,
   });
 
@@ -166,7 +166,7 @@ Focus on:
 - Section organization`;
 
 const response = await ai.models.generateContent({
-    model: "gemini-3-flash-preview",
+    model: "gemini-2.5-flash",
     contents: [{
         role: "user",
         parts: [{
@@ -200,10 +200,11 @@ const response = await ai.models.generateContent({
      });
   }
 
+  res.json(jsonResponse);
+
     } catch (error:any) {
         res.status(500).json({ message: error.message });
     }
 });
-
 
 export default router;
