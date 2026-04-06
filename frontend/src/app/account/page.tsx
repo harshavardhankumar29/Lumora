@@ -3,9 +3,10 @@
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { 
-  User as UserIcon, Mail, Phone, MapPin, Loader2, Camera, Plus, X, FileText, Upload, Settings
+  User as UserIcon, Mail, Phone, MapPin, Loader2, Camera, Plus, X, FileText, Upload, Settings, Crown
 } from "lucide-react";
 import toast from "react-hot-toast";
+import Link from "next/link";
 
 import { userApi, userFormApi } from "@/lib/api";
 import { useAppContext } from "@/context/AppContext";
@@ -158,7 +159,43 @@ export default function AccountPage() {
             </div>
 
             <h2 className="text-2xl font-black tracking-tight mb-1 text-center text-zinc-900 dark:text-zinc-100">{user.name}</h2>
-            <p className="text-indigo-600 dark:text-indigo-400 text-sm font-bold mb-6 capitalize tracking-wide">{user.role}</p>
+            <p className="text-indigo-600 dark:text-indigo-400 text-sm font-bold mb-4 capitalize tracking-wide">{user.role}</p>
+
+            {/* Premium Status Card */}
+            {user.role === "jobseeker" && (
+              user.subscription && new Date(user.subscription).getTime() > Date.now() ? (
+                <div className="w-full mb-6 p-4 rounded-2xl bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 dark:from-amber-950/40 dark:via-orange-950/30 dark:to-yellow-950/20 border border-amber-200/80 dark:border-amber-700/50 shadow-[0_4px_20px_rgba(245,158,11,0.1)] dark:shadow-[0_4px_20px_rgba(245,158,11,0.05)]">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-sm">
+                      <Crown className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-black text-amber-800 dark:text-amber-300">Premium Member</p>
+                      <p className="text-[11px] font-semibold text-amber-600/80 dark:text-amber-500/70">Active Plan</p>
+                    </div>
+                  </div>
+                  <div className="mt-2 pt-2 border-t border-amber-200/60 dark:border-amber-800/40">
+                    <p className="text-[11px] font-bold text-amber-700/70 dark:text-amber-400/60 uppercase tracking-widest">
+                      Valid until {new Date(user.subscription).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <Link href="/subscribe" className="w-full block mb-6">
+                  <div className="w-full p-3 rounded-2xl bg-zinc-100/80 dark:bg-zinc-900/50 border border-zinc-200/80 dark:border-zinc-800/80 hover:border-amber-300 dark:hover:border-amber-700 transition-all cursor-pointer group">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-xl bg-zinc-200 dark:bg-zinc-800 group-hover:bg-gradient-to-br group-hover:from-amber-400 group-hover:to-orange-500 flex items-center justify-center transition-all">
+                        <Crown className="w-4 h-4 text-zinc-500 group-hover:text-white transition-colors" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-zinc-700 dark:text-zinc-300 group-hover:text-amber-700 dark:group-hover:text-amber-400 transition-colors">Upgrade to Premium</p>
+                        <p className="text-[11px] text-zinc-500 font-medium">₹119/month</p>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              )
+            )}
 
             <div className="w-full space-y-3 mb-8">
               <div className="flex items-center text-sm text-zinc-600 dark:text-zinc-400 p-3 bg-white/50 dark:bg-zinc-900/50 border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl shadow-sm">

@@ -2,15 +2,21 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import Razorpay from 'razorpay';
-import jwt from 'jsonwebtoken';
 import paymentRoutes from './routes/payment.js';
 
 
 dotenv.config();
 
+const razorpayKeyId = process.env.RAZORPAY_KEY_ID || process.env.RAZORPAY_KEY;
+const razorpayKeySecret = process.env.RAZORPAY_KEY_SECRET || process.env.RAZORPAY_SECRET;
+
+if (!razorpayKeyId || !razorpayKeySecret) {
+    throw new Error('Missing Razorpay credentials. Set RAZORPAY_KEY_ID/RAZORPAY_KEY_SECRET (or RAZORPAY_KEY/RAZORPAY_SECRET).');
+}
+
 export const instance = new Razorpay({
-    key_id: process.env.RAZORPAY_KEY_ID || "",
-    key_secret: process.env.RAZORPAY_KEY_SECRET || "",
+    key_id: razorpayKeyId,
+    key_secret: razorpayKeySecret,
 });
 
 const app = express();

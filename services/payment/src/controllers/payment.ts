@@ -5,8 +5,8 @@ import { TryCatch } from "../utils/TryCatch.js";
 import { instance } from "../index.js";
 import crypto from 'crypto';
 
-export const checkOut = TryCatch(async (req:AuthenticatedRequest, res) => {
-    if(!req.user) {
+export const checkOut = TryCatch(async (req: AuthenticatedRequest, res) => {
+    if (!req.user) {
         throw new ErrorHandler(401, "No valid user found.");
     }
     const user_id = req.user.user_id;
@@ -19,12 +19,12 @@ export const checkOut = TryCatch(async (req:AuthenticatedRequest, res) => {
 
     const isSubscribed = subTime > now;
 
-    if(isSubscribed){
+    if (isSubscribed) {
         throw new ErrorHandler(400, "User already has an active subscription.");
     }
 
     const options = {
-        amount: Number(119*100),
+        amount: Number(119 * 100),
         currency: "INR",
         notes: {
             user_id: user_id.toString(),
@@ -37,21 +37,27 @@ export const checkOut = TryCatch(async (req:AuthenticatedRequest, res) => {
 
 });
 
-export const paymentVerification = TryCatch(async (req:AuthenticatedRequest, res) => {
+export const paymentVerification = TryCatch(async (req: AuthenticatedRequest, res) => {
     const user = req.user;
 
     const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = req.body;
 
     const body = razorpay_order_id + "|" + razorpay_payment_id;
 
-    const expectedSignature = crypto.createHmac('sha256',process.env.RAZORPAY_SECRET as string).update(body).digest('hex'); 
+    const razorpaySecret = process.env.RAZORPAY_KEY_SECRET || process.env.RAZORPAY_SECRET;
+
+    if (!razorpaySecret) {
+        throw new ErrorHandler(500, 'Razorpay secret is not configured on the payment service.');
+    }
+
+    const expectedSignature = crypto.createHmac('sha256', razorpaySecret).update(body).digest('hex');
 
     const isAuthentic = expectedSignature === razorpay_signature;
 
-    if(isAuthentic){
+    if (isAuthentic) {
         const now = new Date();
 
-        const thrirtyDays = 30*24*60*60*1000;
+        const thrirtyDays = 30 * 24 * 60 * 60 * 1000;
 
         const expiryDate = new Date(now.getTime() + thrirtyDays);
 

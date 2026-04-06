@@ -82,21 +82,37 @@ export default function NavBar() {
                     {isAuth && user ? (
                         <Popover>
                             <PopoverTrigger asChild>
-                                <button className='cursor-pointer ring-2 ring-transparent hover:ring-zinc-500/30 rounded-full outline-none transition-all'>
-                                    <Avatar className="w-10 h-10 border border-zinc-200/80 dark:border-zinc-800 shadow-[0_2px_10px_rgba(0,0,0,0.05)] transition-transform hover:scale-105">
+                                <button className='cursor-pointer ring-2 ring-transparent hover:ring-zinc-500/30 rounded-full outline-none transition-all relative'>
+                                    <Avatar className={`w-10 h-10 shadow-[0_2px_10px_rgba(0,0,0,0.05)] transition-transform hover:scale-105 ${
+                                        user.subscription && new Date(user.subscription).getTime() > Date.now()
+                                            ? 'ring-2 ring-amber-400 dark:ring-amber-500 border-2 border-amber-300 dark:border-amber-600'
+                                            : 'border border-zinc-200/80 dark:border-zinc-800'
+                                    }`}>
                                         <AvatarImage src={user.profile_pic || ""} alt={user.name} className="object-cover" />
                                         <AvatarFallback className="bg-zinc-100 text-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 font-bold">
                                             {user.name?.charAt(0).toUpperCase()}
                                         </AvatarFallback>
                                     </Avatar>
+                                    {user.subscription && new Date(user.subscription).getTime() > Date.now() && (
+                                        <span className="absolute -bottom-0.5 -right-0.5 w-5 h-5 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center ring-2 ring-white dark:ring-zinc-950 shadow-sm">
+                                            <Crown className="w-3 h-3 text-white" />
+                                        </span>
+                                    )}
                                 </button>
                             </PopoverTrigger>
                             <PopoverContent align="end" className="w-64 p-2.5 rounded-[24px] bg-white/95 dark:bg-zinc-950/95 backdrop-blur-xl border border-zinc-200/80 dark:border-zinc-800/80 shadow-[0_10px_40px_rgba(0,0,0,0.08)] dark:shadow-[0_10px_40px_rgba(0,0,0,0.4)] mt-2">
                                 <div className="p-3 mb-2 bg-zinc-50/80 dark:bg-zinc-900/50 rounded-2xl border border-zinc-200/50 dark:border-zinc-800/50">
                                     <p className="font-bold text-[15px] text-zinc-900 dark:text-zinc-100 truncate">{user.name}</p>
                                     <p className="text-xs text-zinc-500 truncate">{user.email}</p>
-                                    <div className="mt-2 inline-block px-2 py-0.5 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 rounded-md text-[10px] font-bold uppercase tracking-wider">
-                                        {user.role}
+                                    <div className="mt-2 flex items-center gap-1.5">
+                                        <span className="inline-block px-2 py-0.5 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 rounded-md text-[10px] font-bold uppercase tracking-wider">
+                                            {user.role}
+                                        </span>
+                                        {user.subscription && new Date(user.subscription).getTime() > Date.now() && (
+                                            <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-gradient-to-r from-amber-400 to-orange-500 text-white rounded-md text-[10px] font-bold uppercase tracking-wider shadow-sm">
+                                                <Crown className="w-2.5 h-2.5" /> Premium
+                                            </span>
+                                        )}
                                     </div>
                                 </div>
                                 <div className="space-y-1">
@@ -119,14 +135,24 @@ export default function NavBar() {
                                             </Button>
                                         </Link>
                                     )}
-                                    {user.role === "jobseeker" && !(
+                                    {user.role === "jobseeker" && (
                                         user.subscription && new Date(user.subscription).getTime() > Date.now()
-                                    ) && (
-                                        <Link href={"/subscribe"}>
-                                            <Button variant="ghost" className='w-full justify-start gap-3 rounded-lg text-sm h-10 text-amber-600 dark:text-amber-400'>
-                                                <Crown size={16} /> Go Premium
-                                            </Button>
-                                        </Link>
+                                        ? (
+                                            <div className="mx-1 p-3 rounded-xl bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border border-amber-200/80 dark:border-amber-800/50">
+                                                <div className="flex items-center gap-2 text-amber-700 dark:text-amber-400 text-sm font-bold">
+                                                    <Crown size={14} className="text-amber-500" /> Premium Active
+                                                </div>
+                                                <p className="text-[11px] text-amber-600/80 dark:text-amber-500/70 font-semibold mt-1">
+                                                    Valid until {new Date(user.subscription).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
+                                                </p>
+                                            </div>
+                                        ) : (
+                                            <Link href={"/subscribe"}>
+                                                <Button variant="ghost" className='w-full justify-start gap-3 rounded-lg text-sm h-10 text-amber-600 dark:text-amber-400'>
+                                                    <Crown size={16} /> Go Premium
+                                                </Button>
+                                            </Link>
+                                        )
                                     )}
                                     <Button variant="ghost" className='w-full justify-start gap-3 rounded-lg text-sm h-10 text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/30 font-medium' onClick={logoutHandler}>
                                         <LogOut size={16} /> Sign Out
@@ -184,14 +210,24 @@ export default function NavBar() {
                             </Button>
                         </Link>
                     )}
-                    {isAuth && user?.role === "jobseeker" && !(
+                    {isAuth && user?.role === "jobseeker" && (
                         user?.subscription && new Date(user.subscription).getTime() > Date.now()
-                    ) && (
-                        <Link href={"/subscribe"} onClick={toggleMenu}>
-                            <Button variant="ghost" className="w-full justify-start gap-3 rounded-xl h-12 text-lg text-amber-600 dark:text-amber-400">
-                                <Crown size={20} /> Go Premium
-                            </Button>
-                        </Link>
+                        ? (
+                            <div className="mx-2 p-4 rounded-2xl bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border border-amber-200/80 dark:border-amber-800/50">
+                                <div className="flex items-center gap-2 text-amber-700 dark:text-amber-400 font-bold">
+                                    <Crown size={18} className="text-amber-500" /> Premium Active
+                                </div>
+                                <p className="text-xs text-amber-600/80 dark:text-amber-500/70 font-semibold mt-1">
+                                    Valid until {new Date(user.subscription).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
+                                </p>
+                            </div>
+                        ) : (
+                            <Link href={"/subscribe"} onClick={toggleMenu}>
+                                <Button variant="ghost" className="w-full justify-start gap-3 rounded-xl h-12 text-lg text-amber-600 dark:text-amber-400">
+                                    <Crown size={20} /> Go Premium
+                                </Button>
+                            </Link>
+                        )
                     )}
                     
                     <div className="h-px bg-zinc-200 dark:bg-zinc-800 my-2" />
@@ -199,14 +235,26 @@ export default function NavBar() {
                     {isAuth && user ? (
                         <>
                             <div className="px-4 py-3 flex items-center gap-3">
-                                <Avatar className="w-10 h-10 border border-zinc-200 dark:border-zinc-800">
-                                    <AvatarImage src={user.profile_pic || ""} alt={user.name} />
-                                    <AvatarFallback className="bg-zinc-100 text-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 font-bold">
-                                        {user.name?.charAt(0).toUpperCase()}
-                                    </AvatarFallback>
-                                </Avatar>
+                                <div className="relative">
+                                    <Avatar className={`w-10 h-10 ${user.subscription && new Date(user.subscription).getTime() > Date.now() ? 'ring-2 ring-amber-400 dark:ring-amber-500' : 'border border-zinc-200 dark:border-zinc-800'}`}>
+                                        <AvatarImage src={user.profile_pic || ""} alt={user.name} />
+                                        <AvatarFallback className="bg-zinc-100 text-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 font-bold">
+                                            {user.name?.charAt(0).toUpperCase()}
+                                        </AvatarFallback>
+                                    </Avatar>
+                                    {user.subscription && new Date(user.subscription).getTime() > Date.now() && (
+                                        <span className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center ring-2 ring-white dark:ring-zinc-950">
+                                            <Crown className="w-2.5 h-2.5 text-white" />
+                                        </span>
+                                    )}
+                                </div>
                                 <div>
-                                    <p className="font-bold">{user.name}</p>
+                                    <div className="flex items-center gap-2">
+                                        <p className="font-bold">{user.name}</p>
+                                        {user.subscription && new Date(user.subscription).getTime() > Date.now() && (
+                                            <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-gradient-to-r from-amber-400 to-orange-500 text-white rounded text-[9px] font-bold uppercase">PRO</span>
+                                        )}
+                                    </div>
                                     <p className="text-xs text-muted-foreground">{user.email}</p>
                                 </div>
                             </div>
